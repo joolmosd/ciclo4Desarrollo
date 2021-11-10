@@ -64,3 +64,4 @@ typings/
 *.tsbuildinfo
 
 src/datasources/mongo.datasource.ts
+apinotifications\config.json

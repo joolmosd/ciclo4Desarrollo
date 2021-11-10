@@ -1,0 +1,8 @@
+{
+  "TWILIO_ACCOUNT_SID": "ACeba1be472422949ac03afd6902f70356",
+  "TWILIO_AUTH_TOKEN": "ffa0ebb91080c5b0b82bddbfbf1da7e6",
+  "TWILIO_PHONE_NUMBER": "+18144731641",
+  "SENDGRID_ID": "Dpu8lnhDRsGdcHELo4FJ8g",
+  "SENDGRID_API_KEY": "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",
+  "SENDGRID_FROM_EMAIL": "joancamilood@hotmail.com"
+}
