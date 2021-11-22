@@ -1,30 +1,32 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, HttpErrors, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
+import axios from 'axios';
 import {User} from '../models';
 import {UserRepository} from '../repositories';
+import {AuthService} from '../services/auth.service';
+import {Credentials} from './../models/credentials.model';
 
+//@authenticate("admin")
 export class UserController {
   constructor(
     @repository(UserRepository)
-    public userRepository : UserRepository,
-  ) {}
+    public userRepository: UserRepository,
+    @service(AuthService)
+    public servicioAuth: AuthService
+  ) { }
 
   @post('/users')
   @response(200, {
@@ -44,7 +46,42 @@ export class UserController {
     })
     user: Omit<User, 'id'>,
   ): Promise<User> {
-    return this.userRepository.create(user);
+    //return this.userRepository.create(user);
+
+    //Nuevo
+    const clave = this.servicioAuth.GenerarClave();
+    const claveCifrada = this.servicioAuth.CifrarClave(clave);
+    user.password = claveCifrada;
+    const p = await this.userRepository.create(user);
+
+
+    // Notificamos al usuario por correo
+    // const destino = user.phone;
+    // Notifiamos al usuario por telefono y cambiar la url por send_sms
+    const destino = user.phone;
+
+    const asunto = 'Registro de usuario en plataforma';
+    const contenido = `Hola, ${user.names} ${user.lastNames} su contraseña en el portal es: ${clave}`
+    axios({
+      method: 'post',
+      url: 'http://localhost:5000/send_sms', //Si quiero enviar por mensaje cambiar a send_sms
+
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      data: {
+        destino: destino,
+        asunto: asunto,
+        contenido: contenido
+      }
+    }).then((data: any) => {
+      console.log(data)
+    }).catch((err: any) => {
+      console.log(err)
+    })
+
+    return p;
   }
 
   @get('/users/count')
@@ -147,4 +184,39 @@ export class UserController {
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.userRepository.deleteById(id);
   }
+
+
+
+  //Servicio de login
+  @post('/login', {
+    responses: {
+      '200': {
+        description: 'Identificación de usuarios'
+      }
+    }
+  })
+  async login(
+    @requestBody() credentials: Credentials
+  ) {
+    const p = await this.servicioAuth.IdentificarPersona(credentials.username, credentials.password);
+    if (p) {
+      const token = this.servicioAuth.GenerarTokenJWT(p);
+
+      return {
+        status: "success",
+        data: {
+          names: p.names,
+          lastNames: p.lastNames,
+          email: p.email,
+          id: p.id
+        },
+        token: token
+      }
+    } else {
+      throw new HttpErrors[401]("Datos invalidos")
+    }
+  }
+
+
+
 }

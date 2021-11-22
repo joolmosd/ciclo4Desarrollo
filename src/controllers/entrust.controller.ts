@@ -1,30 +1,26 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
 import {Entrust} from '../models';
 import {EntrustRepository} from '../repositories';
 
+@authenticate("admin")
 export class EntrustController {
   constructor(
     @repository(EntrustRepository)
-    public entrustRepository : EntrustRepository,
-  ) {}
+    public entrustRepository: EntrustRepository,
+  ) { }
 
   @post('/entrusts')
   @response(200, {
