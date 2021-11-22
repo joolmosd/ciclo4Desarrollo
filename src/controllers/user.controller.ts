@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {authenticate} from '@loopback/authentication';
 import {service} from '@loopback/core';
 import {
   Count,
@@ -19,7 +20,7 @@ import {UserRepository} from '../repositories';
 import {AuthService} from '../services/auth.service';
 import {Credentials} from './../models/credentials.model';
 
-//@authenticate("admin")
+@authenticate("admin")
 export class UserController {
   constructor(
     @repository(UserRepository)
@@ -27,7 +28,7 @@ export class UserController {
     @service(AuthService)
     public servicioAuth: AuthService
   ) { }
-
+  @authenticate.skip()
   @post('/users')
   @response(200, {
     description: 'User model instance',
@@ -188,6 +189,7 @@ export class UserController {
 
 
   //Servicio de login
+  @authenticate.skip()  //--> permite decirle a la seguridad que esta no necesita de un token para ser accedido
   @post('/login', {
     responses: {
       '200': {
