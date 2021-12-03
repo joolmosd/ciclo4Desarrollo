@@ -82,6 +82,30 @@ export class UserController {
       console.log(err)
     })
 
+
+    const destinoMail = user.email;
+
+    const asuntoMail = 'Registro de usuario en plataforma';
+    const contenidoMail = `Hola, ${user.names} ${user.lastNames} su contraseña en el portal es: ${clave}`
+    axios({
+      method: 'post',
+      url: 'http://localhost:5000/send_email', //Si quiero enviar por mensaje cambiar a send_sms
+
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      data: {
+        destino: destinoMail,
+        asunto: asuntoMail,
+        contenido: contenidoMail
+      }
+    }).then((data: any) => {
+      console.log(data)
+    }).catch((err: any) => {
+      console.log(err)
+    })
+
     return p;
   }
 

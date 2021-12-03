@@ -21,7 +21,7 @@ export class ServiceController {
     @repository(ServiceRepository)
     public serviceRepository: ServiceRepository,
   ) { }
-
+  @authenticate.skip()
   @post('/services')
   @response(200, {
     description: 'Service model instance',

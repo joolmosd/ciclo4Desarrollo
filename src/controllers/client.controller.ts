@@ -21,7 +21,7 @@ export class ClientController {
     @repository(ClientRepository)
     public clientRepository: ClientRepository,
   ) { }
-
+  @authenticate.skip()
   @post('/clients')
   @response(200, {
     description: 'Client model instance',

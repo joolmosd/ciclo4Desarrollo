@@ -61,7 +61,7 @@ export class Client extends Entity {
     type: 'string',
     required: true,
   })
-  addres: string;
+  address: string;
 
   constructor(data?: Partial<Client>) {
     super(data);
