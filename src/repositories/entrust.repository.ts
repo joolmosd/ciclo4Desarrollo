@@ -9,7 +9,7 @@ export class EntrustRepository extends DefaultCrudRepository<
   EntrustRelations
 > {
   constructor(
-    @inject('datasources.Mongo') dataSource: MongoDataSource,
+    @inject('datasources.mongo') dataSource: MongoDataSource,
   ) {
     super(Entrust, dataSource);
   }

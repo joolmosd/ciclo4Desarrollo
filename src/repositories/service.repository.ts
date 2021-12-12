@@ -1,7 +1,7 @@
-import {inject, Getter} from '@loopback/core';
-import {DefaultCrudRepository, repository, BelongsToAccessor} from '@loopback/repository';
+import {Getter, inject} from '@loopback/core';
+import {BelongsToAccessor, DefaultCrudRepository, repository} from '@loopback/repository';
 import {MongoDataSource} from '../datasources';
-import {Service, ServiceRelations, Client, Entrust} from '../models';
+import {Client, Entrust, Service, ServiceRelations} from '../models';
 import {ClientRepository} from './client.repository';
 import {EntrustRepository} from './entrust.repository';
 
@@ -18,7 +18,7 @@ export class ServiceRepository extends DefaultCrudRepository<
   public readonly entrustFk: BelongsToAccessor<Entrust, typeof Service.prototype.id>;
 
   constructor(
-    @inject('datasources.Mongo') dataSource: MongoDataSource, @repository.getter('ClientRepository') protected clientRepositoryGetter: Getter<ClientRepository>, @repository.getter('EntrustRepository') protected entrustRepositoryGetter: Getter<EntrustRepository>,
+    @inject('datasources.mongo') dataSource: MongoDataSource, @repository.getter('ClientRepository') protected clientRepositoryGetter: Getter<ClientRepository>, @repository.getter('EntrustRepository') protected entrustRepositoryGetter: Getter<EntrustRepository>,
   ) {
     super(Service, dataSource);
     this.entrustFk = this.createBelongsToAccessorFor('entrustFk', entrustRepositoryGetter,);

@@ -9,7 +9,7 @@ export class ClientRepository extends DefaultCrudRepository<
   ClientRelations
 > {
   constructor(
-    @inject('datasources.Mongo') dataSource: MongoDataSource,
+    @inject('datasources.mongo') dataSource: MongoDataSource,
   ) {
     super(Client, dataSource);
   }
